@@ -36,26 +36,21 @@ int main()
         sprintf(campoaux[i], "%d", i); //usada para criar um vetor de ints
     }
 
-    for(int i = 0; i<n; i++){
-        campo1[i] = geradorDeNumerosAleatorios(MIN, MAX)*1000;
-        printf("%d \n", campo1[i]);
-    }
 
-    for(int i = 0; i<n; i++){
+    for (int i=0; i<n; i++){
+        campo1[i] = geradorDeNumerosAleatorios(MIN, MAX)*1000;
+        printf("%d ", campo1[i]);
+
         strcpy(vetorAux, "Nome ");
         strcat(vetorAux, campoaux[i]);
         strcpy(campo2[i], vetorAux);
-        printf("%s \n", campo2[i]);
-    }
+        printf("%s ", campo2[i]);
 
-    for(int i = 0; i<n; i++){
         strcpy(vetorAux, "Area ");
         strcat(vetorAux, campoaux[i]);
         strcpy(campo2[i], vetorAux);
-        printf("%s \n", campo2[i]);
-    }
+        printf("%s ", campo2[i]);
 
-    for(int i =0; i<n; i++){
         strcpy(campo4[i],"");
         geradorDeDatas(campo4[i]);
         printf("%s \n", campo4[i]);
