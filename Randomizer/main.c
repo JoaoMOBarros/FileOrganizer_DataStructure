@@ -85,6 +85,21 @@ int main()
         printf("%s \n", campo4[i]);
     }
 
+    FILE *binaryFile;
+    binaryFile = fopen("file.bin", "wb");
+    if (binaryFile == NULL){
+        printf("Unable to open the file");
+    }
+    else{
+        for(int i = 0;i<n;i++){
+            fwrite(campo2[i], 30,1,binaryFile);
+            printf("%d ", i);
+        }
+    }
+
+
+    fclose(binaryFile);
+
     free(campo1);
     free(campo2);
     free(campo3);
@@ -92,7 +107,7 @@ int main()
     free(campoaux);
 
 
-
+    return  0;
 }
 
 int geradorDeNumerosAleatorios(int lower, int upper){
