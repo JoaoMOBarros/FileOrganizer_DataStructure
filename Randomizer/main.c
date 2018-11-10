@@ -92,7 +92,11 @@ int main()
     }
     else{
         for(int i = 0;i<n;i++){
+            fwrite(&campo1[i], sizeof(int),1,binaryFile);
             fwrite(campo2[i], 30,1,binaryFile);
+            fwrite(campo3[i], 20,1,binaryFile);
+            fwrite(campo4[i], 10,1,binaryFile);
+
             printf("%d ", i);
         }
     }
