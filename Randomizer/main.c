@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
 
 #define MAX 100000
 #define MIN 1000
@@ -22,7 +23,7 @@ int main()
 
     char **campoaux = (char**)malloc(n*sizeof(char*));
 
-    char vetorAux[20];
+    char vetorAux[30];
 
     srand(time(0));
 
@@ -36,26 +37,53 @@ int main()
         sprintf(campoaux[i], "%d", i); //usada para criar um vetor de ints
     }
 
-
-    for (int i=0; i<n; i++){
-        campo1[i] = geradorDeNumerosAleatorios(MIN, MAX)*1000;
-        printf("%d ", campo1[i]);
-
-        strcpy(vetorAux, "Nome ");
-        strcat(vetorAux, campoaux[i]);
-        strcpy(campo2[i], vetorAux);
-        printf("%s ", campo2[i]);
-
-        strcpy(vetorAux, "Area ");
-        strcat(vetorAux, campoaux[i]);
-        strcpy(campo2[i], vetorAux);
-        printf("%s ", campo2[i]);
-
-        strcpy(campo4[i],"");
-        geradorDeDatas(campo4[i]);
-        printf("%s \n", campo4[i]);
+    for(int i = 0; i<n; i++){
+        if(i<0.7*n){
+            campo1[i] = geradorDeNumerosAleatorios(MIN, MAX)*1000;
+        }
+        else{
+            campo1[i] = campo1[geradorDeNumerosAleatorios(0, 0.7*n)];
+        }
     }
 
+    for(int i = 0; i<n; i++){
+        if(i<0.75*n){
+            strcpy(vetorAux, "Nome_");
+            strcat(vetorAux, campoaux[i]);
+            strcpy(campo2[i], vetorAux);
+        }
+        else{
+            strcpy(campo2[i], campo2[geradorDeNumerosAleatorios(0,0.75*n)]);
+        }
+    }
+
+    for(int i = 0; i<n; i++){
+        if(i<0.80*n){
+            strcpy(vetorAux, "Area_");
+            strcat(vetorAux, campoaux[i]);
+            strcpy(campo3[i], vetorAux);
+        }
+        else{
+            strcpy(campo3[i], campo3[geradorDeNumerosAleatorios(0,0.8*n)]);
+        }
+    }
+
+    for(int i =0; i<n; i++){
+        if(i<0.85*n){
+            strcpy(campo4[i],"");
+            geradorDeDatas(campo4[i]);
+        }
+        else{
+            strcpy(campo4[i],campo4[geradorDeNumerosAleatorios(0,0.85*n)]);
+        }
+    }
+
+    for(int i = 0; i<n; i++){
+        printf("%d ", campo1[i]);
+        printf("%s ", campo2[i]);
+        printf("%s ", campo3[i]);
+        printf("%s \n", campo4[i]);
+    }
 
     free(campo1);
     free(campo2);
@@ -90,3 +118,4 @@ void geradorDeDatas(char *dataFinal){
     sprintf(vetorAux,"%d", ano);
     strcat(dataFinal, vetorAux);
 }
+
