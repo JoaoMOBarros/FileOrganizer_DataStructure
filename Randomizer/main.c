@@ -57,25 +57,25 @@ void criarRegistro(int n, int *campo1, char **campo2, char **campo3, char **camp
     char vetorAux[30]; // Essa linha é a próxima são campos que foram usados para auxi
 
      for (int i = 0; i<n; i++){
-        campo2[i] = (char*)malloc(30*sizeof(char));
+        campo2[i] = (char*)malloc(30*sizeof(char));//nessa segunda alocação de memoria faz com que cada celula do char* ganhe os espaço certo para as strings
         campo3[i] = (char*)malloc(20*sizeof(char));
         campo4[i] = (char*)malloc(10*sizeof(char));
 
     }
 
-    for(int i = 0; i<n; i++){
+    for(int i = 0; i<n; i++){ //Geração do campo1 (valor de mercado), onde gera um valor aleatorio correspondente num intervalo de 1000000 e 100000000
         if(i<0.7*n){
             campo1[i] = geradorDeNumerosAleatorios(MIN, MAX)*1000;
         }
-        else{
+        else{ //todos os elses servirão para configurar as repetições esperadas
             campo1[i] = campo1[geradorDeNumerosAleatorios(0, 0.7*n)];
         }
     }
 
     for(int i = 0; i<n; i++){
         if(i<0.75*n){
-            sprintf(vetorAux, "Nome_%d", i);
-            strcpy(campo2[i], vetorAux);
+            sprintf(vetorAux, "Nome_%d", i);//essa função serve para se escrever dentro de uma string
+            strcpy(campo2[i], vetorAux); //essa aqui acopla o resultado da segunda string no final da primeira
         }
         else{
             strcpy(campo2[i], campo2[geradorDeNumerosAleatorios(0,0.75*n)]);
