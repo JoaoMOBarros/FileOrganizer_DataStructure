@@ -9,6 +9,15 @@
 void geradorDeDatas();
 int geradorDeNumerosAleatorios(int lower, int upper);
 
+typedef struct reg{
+
+    int campo1;
+    char campo2[30];
+    char campo3[20];
+    char campo4[10];
+
+}REGISTRO;
+
 int main()
 {
     int n;
@@ -118,6 +127,8 @@ int geradorDeNumerosAleatorios(int lower, int upper){
     int num = (rand() % (upper - lower + 1)) + lower;
     return num;
 }
+
+
 
 
 void geradorDeDatas(char *dataFinal){
