@@ -8,6 +8,9 @@
 
 void geradorDeDatas();
 int geradorDeNumerosAleatorios(int lower, int upper);
+void criarRegistro(int n, int *campo1, char **campo2, char **campo3, char **campo4);
+void criarBinario(int n, int *campo1, char **campo2, char **campo3, char **campo4);
+void mostrarRegistros(int n, int *campo1, char **campo2, char **campo3, char **campo4);
 
 typedef struct reg{
 
@@ -16,7 +19,7 @@ typedef struct reg{
     char campo3[20];
     char campo4[10];
 
-}REGISTRO;
+}REGISTRO;// Caso sobre um tempo, seria interessante juntarmos todos os campos em formator de REGISTRO atraves de uma struct
 
 int main()
 {
@@ -25,25 +28,39 @@ int main()
     printf("Quantos registros deseja imprimir?: ");
     scanf("%d",&n);
 
-    int *campo1 = (int*)malloc(n*sizeof(int));
-    char **campo2 = (char**)malloc(n*sizeof(char*));
-    char **campo3 = (char**)malloc(n*sizeof(char*));
+    int *campo1 = (int*)malloc(n*sizeof(int)); // Aqui são feitas as definições de cada vetor dinamicamente
+    char **campo2 = (char**)malloc(n*sizeof(char*)); //Como strings não existem em C, vamos precisar usar um vetor de chars, e para liga-los, precisaremos de um segundo ponteiro
+    char **campo3 = (char**)malloc(n*sizeof(char*)); //Por essa razão as variaveis do tipo char vem com ponteiro duplo
     char **campo4 = (char**)malloc(n*sizeof(char*));
-
-    char **campoaux = (char**)malloc(n*sizeof(char*));
-
-    char vetorAux[30];
 
     srand(time(0));
 
+    criarRegistro(n, campo1, campo2, campo3, campo4);
 
-    for (int i = 0; i<n; i++){
+    criarBinario(n, campo1, campo2, campo3, campo4);
+
+    free(campo1);
+    free(campo2);
+    free(campo3);
+    free(campo4);
+
+    return  0;
+}
+
+int geradorDeNumerosAleatorios(int lower, int upper){
+    int num = (rand() % (upper - lower + 1)) + lower;
+    return num;
+}
+
+void criarRegistro(int n, int *campo1, char **campo2, char **campo3, char **campo4){
+
+    char vetorAux[30]; // Essa linha é a próxima são campos que foram usados para auxi
+
+     for (int i = 0; i<n; i++){
         campo2[i] = (char*)malloc(30*sizeof(char));
         campo3[i] = (char*)malloc(20*sizeof(char));
         campo4[i] = (char*)malloc(10*sizeof(char));
-        campoaux[i] = (char*)malloc(12*sizeof(char));//usado para guardar os valores numericos
 
-        sprintf(campoaux[i], "%d", i); //usada para criar um vetor de ints
     }
 
     for(int i = 0; i<n; i++){
@@ -57,8 +74,7 @@ int main()
 
     for(int i = 0; i<n; i++){
         if(i<0.75*n){
-            strcpy(vetorAux, "Nome_");
-            strcat(vetorAux, campoaux[i]);
+            sprintf(vetorAux, "Nome_%d", i);
             strcpy(campo2[i], vetorAux);
         }
         else{
@@ -68,8 +84,7 @@ int main()
 
     for(int i = 0; i<n; i++){
         if(i<0.80*n){
-            strcpy(vetorAux, "Area_");
-            strcat(vetorAux, campoaux[i]);
+            sprintf(vetorAux, "Area_%d", i);
             strcpy(campo3[i], vetorAux);
         }
         else{
@@ -87,49 +102,30 @@ int main()
         }
     }
 
-    for(int i = 0; i<n; i++){
-        printf("%d ", campo1[i]);
-        printf("%s ", campo2[i]);
-        printf("%s ", campo3[i]);
-        printf("%s \n", campo4[i]);
-    }
+    mostrarRegistros(n, campo1, campo2, campo3, campo4);
 
-    FILE *binaryFile;
-    binaryFile = fopen("file.bin", "wb");
-    if (binaryFile == NULL){
+}
+
+void criarBinario(int n, int *campo1, char **campo2, char **campo3, char **campo4){
+     FILE *binaryFile2;
+     binaryFile2 = fopen("file2.bin", "wb");
+
+    if (binaryFile2 == NULL){
         printf("Unable to open the file");
     }
     else{
         for(int i = 0;i<n;i++){
-            fwrite(&campo1[i], sizeof(int),1,binaryFile);
-            fwrite(campo2[i], 30,1,binaryFile);
-            fwrite(campo3[i], 20,1,binaryFile);
-            fwrite(campo4[i], 10,1,binaryFile);
+            fwrite(&campo1[i], sizeof(int),1,binaryFile2);
+            fwrite(campo2[i], 30,1,binaryFile2);
+            fwrite(campo3[i], 20,1,binaryFile2);
+            fwrite(campo4[i], 10,1,binaryFile2);
 
             printf("%d ", i);
         }
     }
 
-
-    fclose(binaryFile);
-
-    free(campo1);
-    free(campo2);
-    free(campo3);
-    free(campo4);
-    free(campoaux);
-
-
-    return  0;
+    fclose(binaryFile2);
 }
-
-int geradorDeNumerosAleatorios(int lower, int upper){
-    int num = (rand() % (upper - lower + 1)) + lower;
-    return num;
-}
-
-
-
 
 void geradorDeDatas(char *dataFinal){
 
@@ -149,3 +145,11 @@ void geradorDeDatas(char *dataFinal){
     strcat(dataFinal, vetorAux);
 }
 
+void mostrarRegistros(int n, int *campo1, char **campo2, char **campo3, char **campo4){
+    for(int i = 0; i<n; i++){
+        printf("%d ", campo1[i]);
+        printf("%s ", campo2[i]);
+        printf("%s ", campo3[i]);
+        printf("%s \n", campo4[i]);
+    }
+}
