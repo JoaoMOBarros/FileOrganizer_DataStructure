@@ -54,7 +54,7 @@ int geradorDeNumerosAleatorios(int lower, int upper){
 
 void criarRegistro(int n, int *campo1, char **campo2, char **campo3, char **campo4){
 
-    char vetorAux[30]; // Essa linha é a próxima são campos que foram usados para auxi
+    char vetorAux[30]; // Usada somente para auxiliar na manipulação de dados
 
      for (int i = 0; i<n; i++){
         campo2[i] = (char*)malloc(30*sizeof(char));//nessa segunda alocação de memoria faz com que cada celula do char* ganhe os espaço certo para as strings
