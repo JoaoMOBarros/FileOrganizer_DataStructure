@@ -9,6 +9,15 @@
 void geradorDeDatas();
 int geradorDeNumerosAleatorios(int lower, int upper);
 
+typedef struct reg{
+
+    int campo1;
+    char campo2[30];
+    char campo3[20];
+    char campo4[10];
+
+}REGISTRO;
+
 int main()
 {
     int n;
@@ -85,6 +94,25 @@ int main()
         printf("%s \n", campo4[i]);
     }
 
+    FILE *binaryFile;
+    binaryFile = fopen("file.bin", "wb");
+    if (binaryFile == NULL){
+        printf("Unable to open the file");
+    }
+    else{
+        for(int i = 0;i<n;i++){
+            fwrite(&campo1[i], sizeof(int),1,binaryFile);
+            fwrite(campo2[i], 30,1,binaryFile);
+            fwrite(campo3[i], 20,1,binaryFile);
+            fwrite(campo4[i], 10,1,binaryFile);
+
+            printf("%d ", i);
+        }
+    }
+
+
+    fclose(binaryFile);
+
     free(campo1);
     free(campo2);
     free(campo3);
@@ -92,13 +120,15 @@ int main()
     free(campoaux);
 
 
-
+    return  0;
 }
 
 int geradorDeNumerosAleatorios(int lower, int upper){
     int num = (rand() % (upper - lower + 1)) + lower;
     return num;
 }
+
+
 
 
 void geradorDeDatas(char *dataFinal){
