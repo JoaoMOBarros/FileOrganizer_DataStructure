@@ -8,6 +8,7 @@
 
 void geradorDeDatas();
 int geradorDeNumerosAleatorios(int lower, int upper);
+void criarRegistro(int n, int *campo1, char **campo2, char **campo3, char **campo4, char **campoaux);
 
 typedef struct reg{
 
@@ -32,12 +33,57 @@ int main()
 
     char **campoaux = (char**)malloc(n*sizeof(char*));
 
-    char vetorAux[30];
-
     srand(time(0));
 
+    criarRegistro(n, campo1, campo2, campo3, campo4, campoaux);
 
-    for (int i = 0; i<n; i++){
+
+    for(int i = 0; i<n; i++){
+        printf("%d ", campo1[i]);
+        printf("%s ", campo2[i]);
+        printf("%s ", campo3[i]);
+        printf("%s \n", campo4[i]);
+    }
+
+    FILE *binaryFile;
+    binaryFile = fopen("file.bin", "wb");
+    if (binaryFile == NULL){
+        printf("Unable to open the file");
+    }
+    else{
+        for(int i = 0;i<n;i++){
+            fwrite(&campo1[i], sizeof(int),1,binaryFile);
+            fwrite(campo2[i], 30,1,binaryFile);
+            fwrite(campo3[i], 20,1,binaryFile);
+            fwrite(campo4[i], 10,1,binaryFile);
+
+            printf("%d ", i);
+        }
+    }
+
+
+    fclose(binaryFile);
+
+    free(campo1);
+    free(campo2);
+    free(campo3);
+    free(campo4);
+    free(campoaux);
+
+
+    return  0;
+}
+
+int geradorDeNumerosAleatorios(int lower, int upper){
+    int num = (rand() % (upper - lower + 1)) + lower;
+    return num;
+}
+
+void criarRegistro(int n, int *campo1, char **campo2, char **campo3, char **campo4, char **campoaux){
+
+    char vetorAux[30];
+
+     for (int i = 0; i<n; i++){
         campo2[i] = (char*)malloc(30*sizeof(char));
         campo3[i] = (char*)malloc(20*sizeof(char));
         campo4[i] = (char*)malloc(10*sizeof(char));
@@ -87,47 +133,9 @@ int main()
         }
     }
 
-    for(int i = 0; i<n; i++){
-        printf("%d ", campo1[i]);
-        printf("%s ", campo2[i]);
-        printf("%s ", campo3[i]);
-        printf("%s \n", campo4[i]);
-    }
-
-    FILE *binaryFile;
-    binaryFile = fopen("file.bin", "wb");
-    if (binaryFile == NULL){
-        printf("Unable to open the file");
-    }
-    else{
-        for(int i = 0;i<n;i++){
-            fwrite(&campo1[i], sizeof(int),1,binaryFile);
-            fwrite(campo2[i], 30,1,binaryFile);
-            fwrite(campo3[i], 20,1,binaryFile);
-            fwrite(campo4[i], 10,1,binaryFile);
-
-            printf("%d ", i);
-        }
-    }
 
 
-    fclose(binaryFile);
-
-    free(campo1);
-    free(campo2);
-    free(campo3);
-    free(campo4);
-    free(campoaux);
-
-
-    return  0;
 }
-
-int geradorDeNumerosAleatorios(int lower, int upper){
-    int num = (rand() % (upper - lower + 1)) + lower;
-    return num;
-}
-
 
 
 
