@@ -34,6 +34,7 @@
 		<Unit filename="escreverBinario.c">
 			<Option compilerVar="CC" />
 		</Unit>
+		<Unit filename="escreverBinario.h" />
 		<Unit filename="gerador.c">
 			<Option compilerVar="CC" />
 		</Unit>
