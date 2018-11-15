@@ -22,8 +22,8 @@ void criarRegistro(int n, REGISTRO* reg);
 void mostrarRegistros(int n, REGISTRO* reg);
 
 
-void criarBinario(int n, REGISTRO* reg);
-void lerBinario();
+void criarBinario(int n, REGISTRO* reg, char nomeArquivo[30]);
+void lerBinario(REGISTRO* salvar, char nomeArquivo[30]);
 
 void swopPlaces(REGISTRO *reg, int pont2, int pont1);
 
@@ -39,17 +39,31 @@ void orgPart3(REGISTRO* regis, int inicio, int fim, int campoNum);
 
 int main(){
     int n;
+    char nomeArquivo[30] = "file23.bin";
+    // Aqui eu declaro um exemplo de nome de arquivo. Caso seja necessario criar e escreve em varios arquivos, basta rodar
+    // um for adicionando algum numero em sua nomeclatura. (ex file2.bin e etc) - util para o multiway merging
 
     printf("Quantos registros deseja imprimir?: ");
     scanf("%d",&n);
 
     REGISTRO *regis = (REGISTRO*)malloc(n*sizeof(REGISTRO));
 
+    REGISTRO *novo = (REGISTRO*)malloc(n*sizeof(REGISTRO));
+
     srand(time(0));
 
     criarRegistro(n, regis);
 
     mostrarRegistros(n,regis);
+
+
+    criarBinario(n, regis, nomeArquivo);
+
+    lerBinario(novo, nomeArquivo);
+
+    mostrarRegistros(n,regis);
+
+
 
     organizarArquivos(regis,0,n-1,n);
 
@@ -59,6 +73,29 @@ int main(){
 
     return  0;
 }
+
+// ***************************************** FUNCIONALIDADE 1 *****************************************************
+
+
+/*
+
+Ainda estou usando string genericas nos campos 1 e 2, mas a ideia é substituir
+isso por algo que realmente nomeie o nome de start ups e suas areas de atuação
+
+*/
+
+void mostrarRegistros(int n, REGISTRO* reg){
+
+    for(int i = 0; i<n; i++){
+        printf("%d ", reg[i].campo1);
+        printf("%s ", reg[i].campo2);
+        printf("%s ", reg[i].campo3);
+        printf("%s \n", reg[i].campo4);
+    }
+
+    printf("\n");
+}
+
 
 int geradorDeNumerosAleatorios(int lower, int upper){
     int num = (rand() % (upper - lower + 1)) + lower;
@@ -72,7 +109,7 @@ void criarRegistro(int n, REGISTRO* reg){
         if(i<0.7*n){
             reg[i].campo1 = geradorDeNumerosAleatorios(MIN, MAX);
         }
-        else{ //todos os elses servirão para configurar as repetições esperadas
+        else{ //todos os elses servirão para configurar as repetições esperadas (aqueles 30%, 25%, 20% e 15% de repetição)
             reg[i].campo1 = reg[geradorDeNumerosAleatorios(0, 0.7*n)].campo1;
         }
     }
@@ -82,7 +119,7 @@ void criarRegistro(int n, REGISTRO* reg){
             sprintf(reg[i].campo2, "Nome_%d", i);//essa função serve para se escrever dentro de uma string
         }
         else{
-            strcpy(reg[i].campo2, reg[geradorDeNumerosAleatorios(0,0.75*n)].campo2);
+            strcpy(reg[i].campo2, reg[geradorDeNumerosAleatorios(0,0.75*n)].campo2); //essa funcao serve para copiar a segunda string no final da primeira string
         }
     }
 
@@ -98,7 +135,7 @@ void criarRegistro(int n, REGISTRO* reg){
     for(int i =0; i<n; i++){
         if(i<0.85*n){
             strcpy(reg[i].campo4,"");
-            geradorDeDatas(&reg[i].campo4);
+            geradorDeDatas(&reg[i].campo4); // chama uma função que gera datas de acordo com a necessidade
         }
         else{
             strcpy(reg[i].campo4,reg[geradorDeNumerosAleatorios(0,0.85*n)].campo4);
@@ -107,6 +144,8 @@ void criarRegistro(int n, REGISTRO* reg){
 }
 
 void geradorDeDatas(char *dataFinal){
+
+	// Para evitar o calculo complexo de anos bissextos, usamos os dias até o numero 28
 
     char dias[30][3] = {"01","02","03","04","05","06","07","08","09","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24","25","26","27","28"};
     char meses[13][3] = {"01","02","03","04","05","06","07","08","09","10","11","12"};
@@ -132,9 +171,21 @@ void geradorDeDatas(char *dataFinal){
     strcat(dataFinal, vetorAux);
 }
 
-void criarBinario(int n, REGISTRO* reg){
+
+// ***************************************** FUNCIONALIDADE 2 *****************************************************
+
+/*
+
+A segunda funcionalidade basicamente escreve um ponteiro de registros que ja foi criado
+na main.c e também já possui os dados em seu interior (ou seja, ja passou pela função gerarRegistro)
+
+*/
+
+//Caso seja necessario criar mais de um binario, basta chamar ela usando registros diferentes e arquivos diferentes (ex: file2.bin, file3.bin e etc)
+
+void criarBinario(int n, REGISTRO* reg, char nomeArquivo[30]){
      FILE *binaryFile;
-     binaryFile = fopen("file.bin", "wb");
+     binaryFile = fopen(nomeArquivo, "wb"); //aqui deve ser defino em qual arquivo sera feita a leitura e escrita binaria
 
     if (binaryFile != NULL){
         for(int i = 0;i<n;i++){
@@ -152,31 +203,47 @@ void criarBinario(int n, REGISTRO* reg){
     fclose(binaryFile);
 }
 
-void lerBinario(){
+/*
+
+Essa função aqui basicamente ira selecionar um arquivo binario que foi criado (ex arquivo.bin)
+e ira ler seu contudo. Importante frizar que nosso registro possui tamanho 65 e não 64, devido a insuficiencia
+do tamanho de nosso quarto campo. Essa escolha foi feita pois acaba por
+
+
+*/
+
+void lerBinario(REGISTRO *salvar, char nomeArquivo[30]){ //Essa função ira carregar o arquivo binario para dentro de do ponteiro REGISTRO oferecido como paramentro
     FILE *binaryFile;
-    binaryFile = fopen("file.bin", "rb");
-    REGISTRO salvar;
+    binaryFile = fopen(nomeArquivo, "rb");
+    int i = 0;
 
     if(binaryFile != NULL){
 
-        while(fread(&salvar,65, 1, binaryFile) != 0){
-            printf("%d %s %s %s\n", salvar.campo1, salvar.campo2, salvar.campo3, salvar.campo4);
+        while(fread(&salvar[i],65, 1, binaryFile) != 0){
+            //printf("%d %s %s %s\n", salvar[i].campo1, salvar[i].campo2, salvar[i].campo3, salvar[i].campo4);
+            i++;
         }
+
+        //printf("\n");
         fclose(binaryFile);
     }
 }
 
-void mostrarRegistros(int n, REGISTRO* reg){
+// ***************************************** FUNCIONALIDADE 3 *****************************************************
 
-    for(int i = 0; i<n; i++){
-        printf("%d ", reg[i].campo1);
-        printf("%s ", reg[i].campo2);
-        printf("%s ", reg[i].campo3);
-        printf("%s \n", reg[i].campo4);
-    }
+/*
 
-    printf("\n");
-}
+Abaixo o método de ordenação que encontra-se implementado é o quicksort
+
+Uso interno: Foi bem complicado fazer com que ele funcionasse, então não vou explicar ele aqui nos comentarios.
+A única coisa que precisa ficar clara para seu uso é sua chamada principal --> organizarArquivos(REGISTRO* reg, int inicio, int fim, int n)
+
+reg -> o registro que voce criou e trabalhou na main
+inicio -> entrar com "0"
+fim-> entrar com "n-1"
+n-> numero de registros "n"
+
+*/
 
 void organizarArquivos(REGISTRO *reg, int inicio, int fim, int n){
 
