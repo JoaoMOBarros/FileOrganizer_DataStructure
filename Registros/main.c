@@ -39,41 +39,66 @@ void orgPart3(REGISTRO* regis, int inicio, int fim, int campoNum);
 //void orgPart3(REGISTRO* regis, int inicio, int fim);
 
 int main(){
-    int n;
 
-    char nomeArquivo[30] = "file23.bin";
-    // Aqui eu declaro um exemplo de nome de arquivo. Caso seja necessario criar e escreve em varios arquivos, basta rodar
-    // um for adicionando algum numero em sua nomeclatura. (ex file2.bin e etc) - util para o multiway merging
+    int numeroDaFuncao;
 
-    printf("Quantos registros deseja imprimir?: ");
-    scanf("%d",&n);
+    scanf("%d", &numeroDaFuncao);
 
-    REGISTRO *regis = (REGISTRO*)malloc(n*sizeof(REGISTRO));
+    if(numeroDaFuncao == 1){
+        char nomeArquivo[30];
+        int n;
+        scanf("%s %d", nomeArquivo, &n);
+        REGISTRO *reg = (REGISTRO*)malloc(n*sizeof(REGISTRO));
+        criarRegistro(n, reg);
+        criarBinario(n, reg, nomeArquivo);
+        free(reg);
+    }
 
-    REGISTRO *novo = (REGISTRO*)malloc(n*sizeof(REGISTRO));
+    if(numeroDaFuncao == 2){
+        char nomeArquivo[30];
+        scanf("%s", nomeArquivo);
+        FILE* fp;
+        fp = fopen(nomeArquivo, "rb");
 
-    srand(time(0));
+        if ( fp == NULL ){
+                printf( "Arquivo vazio.\n" );
+                exit(1);
+        }
+        else{
+            fseek(fp, 0L, SEEK_END);
+            int tamTotal = ftell(fp);
+            int n = tamTotal/64;
+            REGISTRO *reg = (REGISTRO*)malloc(n*sizeof(REGISTRO));
+            lerBinario(reg, nomeArquivo);
+            mostrarRegistros(n, reg);
+            free(reg);
+        }
+    }
 
-    criarRegistro(n, regis);
+    if(numeroDaFuncao == 3){
+        char nomeArquivo[30];
+        char nomeArquivoFinal[30];
+        scanf("%s %s", nomeArquivo, nomeArquivoFinal);
+        FILE* fp;
+        fp = fopen(nomeArquivo, "rb");
 
-    mostrarRegistros(n,regis);
+        if ( fp == NULL ){
+                printf( "Arquivo vazio.\n" );
+                exit(1);
+        }
+        else{
+            fseek(fp, 0L, SEEK_END);
+            int tamTotal = ftell(fp);
+            int n = tamTotal/64;
+            REGISTRO *reg = (REGISTRO*)malloc(n*sizeof(REGISTRO));
+            lerBinario(reg, nomeArquivo);
+            organizarArquivos(reg,0,n-1,n);
+            criarBinario(n,reg,nomeArquivoFinal);
+            free(reg);
+        }
 
+    }
 
-    criarBinario(n, regis, nomeArquivo);
-
-    lerBinario(novo, nomeArquivo);
-
-    mostrarRegistros(n,regis);
-
-
-
-    organizarArquivos(regis,0,n-1,n);
-
-    mostrarRegistros(n,regis);
-
-    free(regis);
-
-    free(novo);
 
     return  0;
 }
@@ -202,12 +227,13 @@ void criarBinario(int n, REGISTRO* reg, char nomeArquivo[30]){
             fwrite(&reg[i].campo1, sizeof(int),1,binaryFile);
             fwrite(&reg[i].campo2, 30,1,binaryFile);
             fwrite(&reg[i].campo3, 20,1,binaryFile);
-            fwrite(&reg[i].campo4, 11,1,binaryFile);
+            fwrite(&reg[i].campo4, 10,1,binaryFile);
         }
+        printf("Arquivo gerado");
     }
 
     else{
-        printf("unable to open");
+        printf("Falha no Processamento");
     }
 
     fclose(binaryFile);
@@ -229,7 +255,7 @@ void lerBinario(REGISTRO *salvar, char nomeArquivo[30]){ //Essa função ira car
 
     if(binaryFile != NULL){
 
-        while(fread(&salvar[i],sizeof(REGISTRO), 1, binaryFile) != 0){
+        while(fread(&salvar[i],64, 1, binaryFile) != 0){
             //printf("%d %s %s %s\n", salvar[i].campo1, salvar[i].campo2, salvar[i].campo3, salvar[i].campo4);
             i++;
         }
@@ -296,8 +322,6 @@ void orgPart1(REGISTRO* regis, int inicio, int fim){
 void orgPart2(REGISTRO *reg, int num, int campoNum){
     int pont1 = 0;
     int pont2 = 1;
-
-
 
     while(1){
         if(pont2 < num){
@@ -397,7 +421,6 @@ void orgPart3(REGISTRO* regis, int inicio, int fim, int campoNum){
 
             }
                 if((int)regis[pont2].campo3[i]<=(int)regis[pivot].campo3[i]){
-                    printf("aqui \n");
                     swopPlaces(regis, pont2, pont1);
                     pont2++;
                     pont1++;
@@ -416,7 +439,6 @@ void orgPart3(REGISTRO* regis, int inicio, int fim, int campoNum){
                 char a = regis[pont2].campo4[i];
                 char b = regis[pivot].campo4[i];
 
-                //printf("pont2: %c e pivot: %c \n", a, b);
 
                 if(a == b){
                     i++;
