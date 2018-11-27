@@ -12,7 +12,8 @@ typedef struct reg{
     int campo1;
     char campo2[30];
     char campo3[20];
-    char campo4[10];
+    char campo4[11];
+
 
 }REGISTRO;// Caso sobre um tempo, seria interessante juntarmos todos os campos em formator de REGISTRO atraves de uma struct
 
@@ -72,6 +73,8 @@ int main(){
 
     free(regis);
 
+    free(novo);
+
     return  0;
 }
 
@@ -88,10 +91,10 @@ isso por algo que realmente nomeie o nome de start ups e suas areas de atuação
 void mostrarRegistros(int n, REGISTRO* reg){
 
     for(int i = 0; i<n; i++){
-        printf("%d ", reg[i].campo1);
-        printf("%s ", reg[i].campo2);
-        printf("%s ", reg[i].campo3);
-        printf("%.10s \n", reg[i].campo4);
+        printf("%d |", reg[i].campo1);
+        printf(" %s |", reg[i].campo2);
+        printf(" %s |", reg[i].campo3);
+        printf(" %.10s \n", reg[i].campo4);
     }
 
     printf("\n");
@@ -106,6 +109,12 @@ int geradorDeNumerosAleatorios(int lower, int upper){
 
 void criarRegistro(int n, REGISTRO* reg){
 
+    char campo2valor1[22][9] = {"UBER","AIRBNB","CYBER","OPEN","CROWD","UDEMY","DUO","FLEX","STONE","QUINTO","TELEGRAM","SHELBY","GENERAL","DROP","RUBRIK","FLUKE","NU","ARQUIVEI","IFOOD","WE","WAVY","GIT"};
+    char campo2valor2[24][10] = {"LINGO","SECURIT","NETWORK","BOX","ONLINE","MAIL","WORK","SLACK","PREZY","GIPHY","COMPUTER","CLOUD","TRADES","COMMERCE","CLOUD","BUFFER","LABS","HUB","LISTS","CHAT","PAYMENT","TINDER","BANK"};
+    char campo2valor3[20][9] = {"DATA","BASE","MODE",".ME","MATCH","LOCAL","VIEW","LTDA","FINDER","GRID","DIGITAL","RANK","STORE","FITNESS","NOW","CHAT","APP","BRANDS","EDUCATION","GAMES"};
+    char campo3valor1[22][12] = {"NUVEM","LAZER","TELEFONIA","MOBILIDADE","ENSINO","SOCIAL","VENDAS","MENSAGENS","HOSPEDAGEM","BANCARIO","HARDWARE","SOFTWARE","ADM","SEGURANCA","FINANCA","TURISMO","LOCALIZACAO","ARMAZEN","COACHING"};
+    char campo3valor2[28][4] = {"BRA","USA","ITA","FRA","GRA","FIL","CHI","RUS","AUG","EC!","ARM","EGT","GMA","IND","IND","JPO","JMK","SKO","POR","LYS","CHL","GER","SAF","MEX","ESP","SZH","ISR","CAN"};
+
     for(int i = 0; i<n; i++){ //Geração do campo1 (valor de mercado), onde gera um valor aleatorio correspondente num intervalo de 1000000 e 100000000
         if(i<0.7*n){
             reg[i].campo1 = geradorDeNumerosAleatorios(MIN, MAX);
@@ -117,7 +126,7 @@ void criarRegistro(int n, REGISTRO* reg){
 
     for(int i = 0; i<n; i++){
         if(i<0.75*n){
-            sprintf(reg[i].campo2, "Nome_%d", i);//essa função serve para se escrever dentro de uma string
+            sprintf(reg[i].campo2,"%s %s %s", campo2valor1[geradorDeNumerosAleatorios(0,21)], campo2valor2[geradorDeNumerosAleatorios(0,21)], campo2valor3[geradorDeNumerosAleatorios(0,19)]);//essa função serve para se escrever dentro de uma string
         }
         else{
             strcpy(reg[i].campo2, reg[geradorDeNumerosAleatorios(0,0.75*n)].campo2); //essa funcao serve para copiar a segunda string no final da primeira string
@@ -126,7 +135,7 @@ void criarRegistro(int n, REGISTRO* reg){
 
     for(int i = 0; i<n; i++){
         if(i<0.80*n){
-            sprintf(reg[i].campo3, "Area_%d", i);
+            sprintf(reg[i].campo3, "%s %s", campo3valor1[geradorDeNumerosAleatorios(0,17)], campo3valor2[geradorDeNumerosAleatorios(0,27)]);
         }
         else{
             strcpy(reg[i].campo3, reg[geradorDeNumerosAleatorios(0,0.8*n)].campo3);
@@ -193,7 +202,7 @@ void criarBinario(int n, REGISTRO* reg, char nomeArquivo[30]){
             fwrite(&reg[i].campo1, sizeof(int),1,binaryFile);
             fwrite(&reg[i].campo2, 30,1,binaryFile);
             fwrite(&reg[i].campo3, 20,1,binaryFile);
-            fwrite(&reg[i].campo4, 10,1,binaryFile);
+            fwrite(&reg[i].campo4, 11,1,binaryFile);
         }
     }
 
@@ -220,7 +229,7 @@ void lerBinario(REGISTRO *salvar, char nomeArquivo[30]){ //Essa função ira car
 
     if(binaryFile != NULL){
 
-        while(fread(&salvar[i],65, 1, binaryFile) != 0){
+        while(fread(&salvar[i],sizeof(REGISTRO), 1, binaryFile) != 0){
             //printf("%d %s %s %s\n", salvar[i].campo1, salvar[i].campo2, salvar[i].campo3, salvar[i].campo4);
             i++;
         }
