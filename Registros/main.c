@@ -12,7 +12,7 @@ typedef struct reg{
     int campo1;
     char campo2[30];
     char campo3[20];
-    char campo4[11];
+    char campo4[10];
 
 }REGISTRO;// Caso sobre um tempo, seria interessante juntarmos todos os campos em formator de REGISTRO atraves de uma struct
 
@@ -39,6 +39,7 @@ void orgPart3(REGISTRO* regis, int inicio, int fim, int campoNum);
 
 int main(){
     int n;
+
     char nomeArquivo[30] = "file23.bin";
     // Aqui eu declaro um exemplo de nome de arquivo. Caso seja necessario criar e escreve em varios arquivos, basta rodar
     // um for adicionando algum numero em sua nomeclatura. (ex file2.bin e etc) - util para o multiway merging
@@ -90,7 +91,7 @@ void mostrarRegistros(int n, REGISTRO* reg){
         printf("%d ", reg[i].campo1);
         printf("%s ", reg[i].campo2);
         printf("%s ", reg[i].campo3);
-        printf("%s \n", reg[i].campo4);
+        printf("%.10s \n", reg[i].campo4);
     }
 
     printf("\n");
@@ -192,7 +193,7 @@ void criarBinario(int n, REGISTRO* reg, char nomeArquivo[30]){
             fwrite(&reg[i].campo1, sizeof(int),1,binaryFile);
             fwrite(&reg[i].campo2, 30,1,binaryFile);
             fwrite(&reg[i].campo3, 20,1,binaryFile);
-            fwrite(&reg[i].campo4, 11,1,binaryFile);
+            fwrite(&reg[i].campo4, 10,1,binaryFile);
         }
     }
 
